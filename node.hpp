@@ -83,25 +83,23 @@ Node<TYPE> *Node<TYPE>::rotate_left(Node<TYPE> *x) {
 
 template<typename TYPE>
 Node<TYPE>* Node<TYPE>::balance(Node<TYPE>* node) {
-    Node<TYPE>::update_height(node);  // Используем статический вызов для update_height
-    int balance_factor = Node<TYPE>::get_balance(node);  // Статический вызов get_balance
+    Node<TYPE>::update_height(node);
+    int balance_factor = Node<TYPE>::get_balance(node);
 
     Node<TYPE>* rotated_node = node;
 
     if (balance_factor > 1) {
-        // Если балансировка нужна, то сначала проверим левый поддерево для "LR" случая
         if (Node<TYPE>::get_balance(node->left) < 0) {
-            node->left = Node<TYPE>::rotate_left(node->left);  // Статический вызов rotate_left
+            node->left = Node<TYPE>::rotate_left(node->left);
         }
-        rotated_node = Node<TYPE>::rotate_right(node);  // Статический вызов rotate_right
+        rotated_node = Node<TYPE>::rotate_right(node);
     }
 
     if (balance_factor < -1) {
-        // Если балансировка нужна, то сначала проверим правый поддерево для "RL" случая
         if (Node<TYPE>::get_balance(node->right) > 0) {
-            node->right = Node<TYPE>::rotate_right(node->right);  // Статический вызов rotate_right
+            node->right = Node<TYPE>::rotate_right(node->right);
         }
-        rotated_node = Node<TYPE>::rotate_left(node);  // Статический вызов rotate_left
+        rotated_node = Node<TYPE>::rotate_left(node);
     }
 
     return rotated_node;
