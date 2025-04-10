@@ -11,10 +11,14 @@ private:
     void destroyTree(Node<TYPE> *);
 
     void to_array_helper(Node<TYPE> *, std::vector<TYPE> &) const;
+
+    Node<TYPE> *remove_node(Node<TYPE> *, TYPE);
 public:
     Tree();
 
     void insert(TYPE);
+
+    void remove(TYPE);
 
     std::vector<TYPE> to_array() const;
 
@@ -56,6 +60,51 @@ void Tree<TYPE>::to_array_helper(Node<TYPE> *node, std::vector<TYPE> &array) con
 }
 
 /*
+*   Helper method for to_array. Will add an element into the vector
+*/
+template<typename TYPE>
+Node<TYPE>* Tree<TYPE>::remove_node(Node<TYPE>* node, TYPE value) {
+    Node<TYPE>* result = node;
+
+    if (node != nullptr) {
+        if (value < node->data) {
+            node->left = remove_node(node->left, value);
+        }
+        else if (value > node->data) {
+            node->right = remove_node(node->right, value);
+        }
+        else {
+            // Узел найден
+            if (node->left == nullptr && node->right == nullptr) {
+                delete node;
+                result = nullptr;
+            }
+            else if (node->left == nullptr) {
+                result = node->right;
+                delete node;
+            }
+            else if (node->right == nullptr) {
+                result = node->left;
+                delete node;
+            }
+            else {
+                // Два потомка — ищем min в правом поддереве
+                Node<TYPE>* minNode = node->right;
+                while (minNode->left != nullptr) {
+                    minNode = minNode->left;
+                }
+
+                node->data = minNode->data;
+                node->right = remove_node(node->right, minNode->data);
+            }
+        }
+    }
+
+    return result;
+}
+
+
+/*
 *   Method to insert an element into the tree
 */
 template<typename TYPE>
@@ -77,6 +126,15 @@ void Tree<TYPE>::insert(TYPE value) {
         this->head = new Node<TYPE>(value);
     }
 }
+
+/*
+*   Method to remove an element
+*/
+template<typename TYPE>
+void Tree<TYPE>::remove(TYPE value) {
+    head = remove_node(head, value);
+}
+
 
 /*
 *   Method to interpret tree as array
