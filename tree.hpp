@@ -12,6 +12,8 @@ private:
 
     void to_array_helper(Node<TYPE> *, std::vector<TYPE> &) const;
 
+    std::size_t count_nodes(Node<TYPE> *) const;
+
     Node<TYPE> *remove_node(Node<TYPE> *, TYPE);
 public:
     Tree();
@@ -22,6 +24,8 @@ public:
 
     bool find(TYPE);
 
+    std::size_t size() const;
+
     std::vector<TYPE> to_array() const;
 
     ~Tree();
@@ -30,13 +34,13 @@ public:
 
 template<typename TYPE>
 Tree<TYPE>::Tree() {
-    head = nullptr;
+    this->head = nullptr;
 }
 
 
 template<typename TYPE>
 Tree<TYPE>::~Tree() {
-    destroyTree(head);
+    destroyTree(this->head);
 }
 
 
@@ -81,7 +85,6 @@ Node<TYPE>* Tree<TYPE>::remove_node(Node<TYPE>* node, TYPE value) {
             node->right = remove_node(node->right, value);
         }
         else {
-            // Узел найден
             if (node->left == nullptr && node->right == nullptr) {
                 delete node;
                 result = nullptr;
@@ -95,7 +98,6 @@ Node<TYPE>* Tree<TYPE>::remove_node(Node<TYPE>* node, TYPE value) {
                 delete node;
             }
             else {
-                // Два потомка — ищем min в правом поддереве
                 Node<TYPE>* minNode = node->right;
                 while (minNode->left != nullptr) {
                     minNode = minNode->left;
@@ -108,6 +110,19 @@ Node<TYPE>* Tree<TYPE>::remove_node(Node<TYPE>* node, TYPE value) {
     }
 
     return result;
+}
+
+
+/*
+*   Helper method to count nodes
+*/
+template<typename TYPE>
+std::size_t Tree<TYPE>::count_nodes(Node<TYPE> *node) const {
+    if (node == nullptr) {
+        return 0;
+    }
+
+    return 1 + count_nodes(node->right) + count_nodes(node->left);
 }
 
 
@@ -151,7 +166,7 @@ template<typename TYPE>
 bool Tree<TYPE>::find(TYPE value) {
     bool result = false;
 
-    Node<TYPE> *current = head;
+    Node<TYPE> *current = this->head;
     while (current != nullptr) {
         if (current->data == value) {
             result = true;
@@ -168,12 +183,22 @@ bool Tree<TYPE>::find(TYPE value) {
     return result;
 }
 
+
+/*
+*   Method to get size of the tree
+*/
+template<typename TYPE>
+std::size_t Tree<TYPE>::size() const {
+    return count_nodes(this->head);
+}
+
+
 /*
 *   Method to interpret tree as array
 */
 template<typename TYPE>
 std::vector<TYPE> Tree<TYPE>::to_array() const {
     std::vector<TYPE> result;
-    to_array_helper(head, result);
+    to_array_helper(this->head, result);
     return result;
 }
