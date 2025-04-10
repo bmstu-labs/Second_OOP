@@ -20,6 +20,8 @@ public:
 
     void insert(TYPE);
 
+    void insert(std::vector<TYPE> &);
+
     void remove(TYPE);
 
     bool find(TYPE);
@@ -149,6 +151,13 @@ void Tree<TYPE>::insert(TYPE value) {
     }
 }
 
+
+template<typename TYPE>
+void Tree<TYPE>::insert(std::vector<TYPE> &array) {
+    for (auto value : array) {
+        this->insert(value);
+    }
+}
 
 /*
 *   Method to remove an element
