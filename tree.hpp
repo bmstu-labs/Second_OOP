@@ -152,6 +152,9 @@ void Tree<TYPE>::insert(TYPE value) {
 }
 
 
+/*
+*   Method to insert an array into the tree
+*/
 template<typename TYPE>
 void Tree<TYPE>::insert(std::vector<TYPE> &array) {
     for (auto value : array) {
