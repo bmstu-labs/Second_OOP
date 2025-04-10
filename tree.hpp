@@ -12,6 +12,8 @@ private:
 
     void to_array_helper(Node<TYPE> *, std::vector<TYPE> &) const;
 
+    Node<TYPE> *insert_node(Node<TYPE> *, TYPE);
+
     std::size_t count_nodes(Node<TYPE> *) const;
 
     Node<TYPE> *remove_node(Node<TYPE> *, TYPE);
@@ -56,6 +58,27 @@ void Tree<TYPE>::destroyTree(Node<TYPE> *node) {
         destroyTree(node->right);
         delete node;
     }
+}
+
+
+/*
+*   Helper method for insert
+*/
+template<typename TYPE>
+Node<TYPE> *Tree<TYPE>::insert_node(Node<TYPE> *node, TYPE value) {
+    Node<TYPE>* result = node;
+
+    if (node == nullptr) {
+        result = new Node<TYPE>(value);
+    } else if (value < node->data) {
+        node->left = insert_node(node->left, value);
+        result = Node<TYPE>::balance(node);
+    } else if (value > node->data) {
+        node->right = insert_node(node->right, value);
+        result = Node<TYPE>::balance(node);
+    }
+
+    return result;
 }
 
 
@@ -133,22 +156,7 @@ std::size_t Tree<TYPE>::count_nodes(Node<TYPE> *node) const {
 */
 template<typename TYPE>
 void Tree<TYPE>::insert(TYPE value) {
-    if (this->head != nullptr) {
-        Node<TYPE> *parent, *current = this->head;
-        while (current) {
-            parent = current;
-            current = current->data < value ? current->right : current->left;
-        }
-        if (parent->data < value) {
-            parent->right = new Node(value);
-        } 
-        else {
-            parent->left = new Node(value);
-        }
-    }
-    else {
-        this->head = new Node<TYPE>(value);
-    }
+    this->head = insert_node(this->head, value);
 }
 
 
