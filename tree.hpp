@@ -70,10 +70,12 @@ Node<TYPE> *Tree<TYPE>::insert_node(Node<TYPE> *node, TYPE value) {
 
     if (node == nullptr) {
         result = new Node<TYPE>(value);
-    } else if (value < node->data) {
+    } 
+    else if (value < node->data) {
         node->left = insert_node(node->left, value);
         result = Node<TYPE>::balance(node);
-    } else if (value > node->data) {
+    } 
+    else if (value > node->data) {
         node->right = insert_node(node->right, value);
         result = Node<TYPE>::balance(node);
     }
