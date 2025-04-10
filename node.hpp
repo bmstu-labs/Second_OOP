@@ -13,13 +13,11 @@ public:
     Node();
 
     Node(TYPE);
-
-    friend std::ostream &operator << (std::ostream&, const Node&);
 };
 
 template<typename TYPE>
 Node<TYPE>::Node() {
-    data = 0;
+    data = TYPE{};
     left = nullptr;
     right = nullptr;
 }
