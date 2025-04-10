@@ -20,20 +20,25 @@ public:
 
     void remove(TYPE);
 
+    bool find(TYPE);
+
     std::vector<TYPE> to_array() const;
 
     ~Tree();
 };
+
 
 template<typename TYPE>
 Tree<TYPE>::Tree() {
     head = nullptr;
 }
 
+
 template<typename TYPE>
 Tree<TYPE>::~Tree() {
     destroyTree(head);
 }
+
 
 /*
 *   Helper method for destructor. Delete node and its children
@@ -47,6 +52,7 @@ void Tree<TYPE>::destroyTree(Node<TYPE> *node) {
     }
 }
 
+
 /*
 *   Helper method for to_array. Will add an element into the vector
 */
@@ -58,6 +64,7 @@ void Tree<TYPE>::to_array_helper(Node<TYPE> *node, std::vector<TYPE> &array) con
         to_array_helper(node->right, array);
     }
 }
+
 
 /*
 *   Helper method for to_array. Will add an element into the vector
@@ -127,6 +134,7 @@ void Tree<TYPE>::insert(TYPE value) {
     }
 }
 
+
 /*
 *   Method to remove an element
 */
@@ -135,6 +143,30 @@ void Tree<TYPE>::remove(TYPE value) {
     head = remove_node(head, value);
 }
 
+
+/*
+*   Method to find an element
+*/
+template<typename TYPE>
+bool Tree<TYPE>::find(TYPE value) {
+    bool result = false;
+
+    Node<TYPE> *current = head;
+    while (current != nullptr) {
+        if (current->data == value) {
+            result = true;
+            break;
+        }
+        else if (value < current->data) {
+            current = current->left;
+        }
+        else {
+            current = current->right;
+        }
+    }
+
+    return result;
+}
 
 /*
 *   Method to interpret tree as array
