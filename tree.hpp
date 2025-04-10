@@ -2,19 +2,21 @@
 
 #include "node.hpp"
 
+#include <vector>
+
 template<typename TYPE>
 class Tree {
     Node<TYPE> *head;
 private:
     void destroyTree(Node<TYPE> *);
 
-    void to_array_helper(Node<TYPE> *, std::vector<TYPE> &);
+    void to_array_helper(Node<TYPE> *, std::vector<TYPE> &) const;
 public:
     Tree();
 
     void insert(TYPE);
 
-    std::vector<TYPE> &to_array() const;
+    std::vector<TYPE> to_array() const;
 
     ~Tree();
 };
@@ -45,14 +47,17 @@ void Tree<TYPE>::destroyTree(Node<TYPE> *node) {
 *   Helper method for to_array. Will add an element into the vector
 */
 template<typename TYPE>
-void Tree<TYPE>::to_array_helper(Node<TYPE> *node, std::vector<TYPE> &array) {
+void Tree<TYPE>::to_array_helper(Node<TYPE> *node, std::vector<TYPE> &array) const {
     if (node != nullptr) {
-        to_array_helper(node->left);
+        to_array_helper(node->left, array);
         array.push_back(node->data);
-        to_array_helper(node->right);
+        to_array_helper(node->right, array);
     }
 }
 
+/*
+*   Method to insert an element into the tree
+*/
 template<typename TYPE>
 void Tree<TYPE>::insert(TYPE value) {
     if (this->head != nullptr) {
@@ -73,8 +78,11 @@ void Tree<TYPE>::insert(TYPE value) {
     }
 }
 
+/*
+*   Method to interpret tree as array
+*/
 template<typename TYPE>
-std::vector<TYPE> &Tree<TYPE>::to_array() const {
+std::vector<TYPE> Tree<TYPE>::to_array() const {
     std::vector<TYPE> result;
     to_array_helper(head, result);
     return result;
