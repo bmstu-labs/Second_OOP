@@ -8,6 +8,8 @@ template<typename TYPE>
 class Tree {
     Node<TYPE> *head;
 private:
+    Node<TYPE> *copy_helper(Node<TYPE> *);
+
     void destroyTree(Node<TYPE> *);
 
     void to_array_helper(Node<TYPE> *, std::vector<TYPE> &) const;
@@ -20,9 +22,11 @@ private:
 public:
     Tree();
 
+    Tree(const Tree &);
+
     void insert(TYPE);
 
-    void insert(std::vector<TYPE> &);
+    void insert(const std::vector<TYPE> &);
 
     void remove(TYPE);
 
@@ -43,8 +47,27 @@ Tree<TYPE>::Tree() {
 
 
 template<typename TYPE>
+Tree<TYPE>::Tree(const Tree &source) {
+    this->head = copy_helper(source.head);
+}
+
+
+template<typename TYPE>
 Tree<TYPE>::~Tree() {
     destroyTree(this->head);
+}
+
+
+template<typename TYPE>
+Node<TYPE> *Tree<TYPE>::copy_helper(Node<TYPE> *node) {
+    Node<TYPE> *copy_node = nullptr;
+    if (node != nullptr) {
+        copy_node->data = node->data;
+        copy_node->left = copy_helper(node->left);
+        copy_node->right = copy_helper(node->right);
+    }
+
+    return copy_node;
 }
 
 
@@ -166,7 +189,7 @@ void Tree<TYPE>::insert(TYPE value) {
 *   Method to insert an array into the tree
 */
 template<typename TYPE>
-void Tree<TYPE>::insert(std::vector<TYPE> &array) {
+void Tree<TYPE>::insert(const std::vector<TYPE> &array) {
     for (auto value : array) {
         this->insert(value);
     }
