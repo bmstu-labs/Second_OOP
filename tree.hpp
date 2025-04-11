@@ -62,6 +62,7 @@ template<typename TYPE>
 Node<TYPE> *Tree<TYPE>::copy_helper(Node<TYPE> *node) {
     Node<TYPE> *copy_node = nullptr;
     if (node != nullptr) {
+        copy_node = new Node<TYPE>;
         copy_node->data = node->data;
         copy_node->left = copy_helper(node->left);
         copy_node->right = copy_helper(node->right);
