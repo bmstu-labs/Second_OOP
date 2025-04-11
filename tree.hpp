@@ -8,7 +8,7 @@ template<typename TYPE>
 class Tree {
     Node<TYPE> *head;
 private:
-    Node<TYPE> *copy_helper(Node<TYPE> *);
+    std::size_t count_nodes(Node<TYPE> *) const;
 
     void destroyTree(Node<TYPE> *);
 
@@ -16,7 +16,7 @@ private:
 
     Node<TYPE> *insert_node(Node<TYPE> *, TYPE);
 
-    std::size_t count_nodes(Node<TYPE> *) const;
+    Node<TYPE> *copy_helper(Node<TYPE> *);
 
     Node<TYPE> *remove_node(Node<TYPE> *, TYPE);
 public:
@@ -24,6 +24,10 @@ public:
 
     Tree(const Tree &);
 
+    Tree(const std::vector<TYPE> &);
+
+    ~Tree();
+public:
     void insert(TYPE);
 
     void insert(const std::vector<TYPE> &);
@@ -35,8 +39,6 @@ public:
     std::size_t size() const;
 
     std::vector<TYPE> to_array() const;
-
-    ~Tree();
 };
 
 
@@ -53,11 +55,21 @@ Tree<TYPE>::Tree(const Tree &source) {
 
 
 template<typename TYPE>
+Tree<TYPE>::Tree(const std::vector<TYPE> &array) {
+    this->head = nullptr;
+    this->insert(array);
+}
+
+
+template<typename TYPE>
 Tree<TYPE>::~Tree() {
     destroyTree(this->head);
 }
 
 
+/*
+*   Helper method for copy constructor. Copy values recursively
+*/
 template<typename TYPE>
 Node<TYPE> *Tree<TYPE>::copy_helper(Node<TYPE> *node) {
     Node<TYPE> *copy_node = nullptr;
