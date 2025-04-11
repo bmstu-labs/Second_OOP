@@ -8,61 +8,61 @@ template<typename TYPE>
 class Tree {
     Node<TYPE> *head;
 private:
-    std::size_t count_nodes(Node<TYPE> *) const;
+    std::size_t count_nodes(Node<TYPE> *) const noexcept;
 
-    void destroyTree(Node<TYPE> *);
+    void destroyTree(Node<TYPE> *) noexcept;
 
-    void to_array_helper(Node<TYPE> *, std::vector<TYPE> &) const;
+    void to_array_helper(Node<TYPE> *, std::vector<TYPE> &) const noexcept;
 
-    Node<TYPE> *insert_node(Node<TYPE> *, TYPE);
+    Node<TYPE> *insert_node(Node<TYPE> *, TYPE) noexcept;
 
-    Node<TYPE> *copy_helper(Node<TYPE> *);
+    Node<TYPE> *copy_helper(Node<TYPE> *) noexcept;
 
-    Node<TYPE> *remove_node(Node<TYPE> *, TYPE);
+    Node<TYPE> *remove_node(Node<TYPE> *, TYPE) noexcept;
 public:
-    Tree();
+    Tree() noexcept;
 
-    Tree(const Tree &);
+    Tree(const Tree &) noexcept;
 
-    Tree(const std::vector<TYPE> &);
+    Tree(const std::vector<TYPE> &) noexcept;
 
-    ~Tree();
+    ~Tree() noexcept;
 public:
-    void insert(TYPE);
+    void insert(TYPE) noexcept;
 
-    void insert(const std::vector<TYPE> &);
+    void insert(const std::vector<TYPE> &) noexcept;
 
-    void remove(TYPE);
+    void remove(TYPE) noexcept;
 
-    bool find(TYPE);
+    bool find(TYPE) noexcept;
 
-    std::size_t size() const;
+    std::size_t size() const noexcept;
 
-    std::vector<TYPE> to_array() const;
+    std::vector<TYPE> to_array() const noexcept;
 };
 
 
 template<typename TYPE>
-Tree<TYPE>::Tree() {
+Tree<TYPE>::Tree() noexcept {
     this->head = nullptr;
 }
 
 
 template<typename TYPE>
-Tree<TYPE>::Tree(const Tree &source) {
+Tree<TYPE>::Tree(const Tree &source) noexcept {
     this->head = copy_helper(source.head);
 }
 
 
 template<typename TYPE>
-Tree<TYPE>::Tree(const std::vector<TYPE> &array) {
+Tree<TYPE>::Tree(const std::vector<TYPE> &array) noexcept {
     this->head = nullptr;
     this->insert(array);
 }
 
 
 template<typename TYPE>
-Tree<TYPE>::~Tree() {
+Tree<TYPE>::~Tree() noexcept{
     destroyTree(this->head);
 }
 
@@ -71,7 +71,7 @@ Tree<TYPE>::~Tree() {
 *   Helper method for copy constructor. Copy values recursively
 */
 template<typename TYPE>
-Node<TYPE> *Tree<TYPE>::copy_helper(Node<TYPE> *node) {
+Node<TYPE> *Tree<TYPE>::copy_helper(Node<TYPE> *node) noexcept {
     Node<TYPE> *copy_node = nullptr;
     if (node != nullptr) {
         copy_node = new Node<TYPE>;
@@ -88,7 +88,7 @@ Node<TYPE> *Tree<TYPE>::copy_helper(Node<TYPE> *node) {
 *   Helper method for destructor. Delete node and its children
 */
 template<typename TYPE>
-void Tree<TYPE>::destroyTree(Node<TYPE> *node) {
+void Tree<TYPE>::destroyTree(Node<TYPE> *node) noexcept {
     if (node != nullptr) {
         destroyTree(node->left);
         destroyTree(node->right);
@@ -101,7 +101,7 @@ void Tree<TYPE>::destroyTree(Node<TYPE> *node) {
 *   Helper method for insert
 */
 template<typename TYPE>
-Node<TYPE> *Tree<TYPE>::insert_node(Node<TYPE> *node, TYPE value) {
+Node<TYPE> *Tree<TYPE>::insert_node(Node<TYPE> *node, TYPE value) noexcept {
     Node<TYPE>* result = node;
 
     if (node == nullptr) {
@@ -124,7 +124,7 @@ Node<TYPE> *Tree<TYPE>::insert_node(Node<TYPE> *node, TYPE value) {
 *   Helper method for to_array. Will add an element into the vector
 */
 template<typename TYPE>
-void Tree<TYPE>::to_array_helper(Node<TYPE> *node, std::vector<TYPE> &array) const {
+void Tree<TYPE>::to_array_helper(Node<TYPE> *node, std::vector<TYPE> &array) const noexcept {
     if (node != nullptr) {
         to_array_helper(node->left, array);
         array.push_back(node->data);
@@ -137,7 +137,7 @@ void Tree<TYPE>::to_array_helper(Node<TYPE> *node, std::vector<TYPE> &array) con
 *   Helper method for to_array. Will add an element into the vector
 */
 template<typename TYPE>
-Node<TYPE>* Tree<TYPE>::remove_node(Node<TYPE>* node, TYPE value) {
+Node<TYPE>* Tree<TYPE>::remove_node(Node<TYPE>* node, TYPE value) noexcept {
     Node<TYPE>* result = node;
 
     if (node != nullptr) {
@@ -180,7 +180,7 @@ Node<TYPE>* Tree<TYPE>::remove_node(Node<TYPE>* node, TYPE value) {
 *   Helper method to count nodes
 */
 template<typename TYPE>
-std::size_t Tree<TYPE>::count_nodes(Node<TYPE> *node) const {
+std::size_t Tree<TYPE>::count_nodes(Node<TYPE> *node) const noexcept {
     if (node == nullptr) {
         return 0;
     }
@@ -193,7 +193,7 @@ std::size_t Tree<TYPE>::count_nodes(Node<TYPE> *node) const {
 *   Method to insert an element into the tree
 */
 template<typename TYPE>
-void Tree<TYPE>::insert(TYPE value) {
+void Tree<TYPE>::insert(TYPE value) noexcept {
     this->head = insert_node(this->head, value);
 }
 
@@ -202,7 +202,7 @@ void Tree<TYPE>::insert(TYPE value) {
 *   Method to insert an array into the tree
 */
 template<typename TYPE>
-void Tree<TYPE>::insert(const std::vector<TYPE> &array) {
+void Tree<TYPE>::insert(const std::vector<TYPE> &array) noexcept {
     for (auto value : array) {
         this->insert(value);
     }
@@ -212,7 +212,7 @@ void Tree<TYPE>::insert(const std::vector<TYPE> &array) {
 *   Method to remove an element
 */
 template<typename TYPE>
-void Tree<TYPE>::remove(TYPE value) {
+void Tree<TYPE>::remove(TYPE value) noexcept {
     head = remove_node(head, value);
 }
 
@@ -221,7 +221,7 @@ void Tree<TYPE>::remove(TYPE value) {
 *   Method to find an element
 */
 template<typename TYPE>
-bool Tree<TYPE>::find(TYPE value) {
+bool Tree<TYPE>::find(TYPE value) noexcept {
     bool result = false;
 
     Node<TYPE> *current = this->head;
@@ -246,7 +246,7 @@ bool Tree<TYPE>::find(TYPE value) {
 *   Method to get size of the tree
 */
 template<typename TYPE>
-std::size_t Tree<TYPE>::size() const {
+std::size_t Tree<TYPE>::size() const noexcept {
     return count_nodes(this->head);
 }
 
@@ -255,7 +255,7 @@ std::size_t Tree<TYPE>::size() const {
 *   Method to interpret tree as array
 */
 template<typename TYPE>
-std::vector<TYPE> Tree<TYPE>::to_array() const {
+std::vector<TYPE> Tree<TYPE>::to_array() const noexcept {
     std::vector<TYPE> result;
     to_array_helper(this->head, result);
     return result;
