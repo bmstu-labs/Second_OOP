@@ -55,7 +55,7 @@ cmake ..
 make
 
 ### Windows (PowerShell)
-```
+```bash
 git clone https://github.com/yourusername/avl-tree.git
 cd avl-tree
 mkdir build
@@ -64,10 +64,11 @@ cmake .. -G "Visual Studio 16 2019"
 cmake --build . --config Release
 ```
 
-## 📚 Примеры использования
+---
 
 <a name="-примеры-использования"></a>
-```
+## 📚 Примеры использования
+```cpp
 #include "tree.hpp"
 #include <iostream>
 
@@ -94,9 +95,9 @@ int main() {
     return 0;
 }
 ```
+---
 
 <a name="-структура-проекта"></a>
-
 ## 📂 Структура проекта
 
 ```
@@ -109,11 +110,12 @@ int main() {
 ├── CMakeLists.txt  # Конфигурация сборки
 └── README.md       # Документация
 ```
+---
 
 <a name="-тестирование"></a>
 ## 🧪 Тестирование
 
 После сборки запустите:
-```
+```bash
 ./build/avl_tests
 ```
