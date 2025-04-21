@@ -1,7 +1,3 @@
-# Tests
-test/*
-test
-
 # VS Code
 .vscode/*
 .vscode
@@ -38,3 +34,7 @@ test
 *.exe
 *.out
 *.app
+
+# Build
+build/*
+!build/.gitkeep
