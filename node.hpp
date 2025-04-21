@@ -5,7 +5,7 @@
 
 template<typename TYPE>
 class Node {
-    int height;
+    unsigned int height;
 public:
     TYPE data;
     Node *left;
