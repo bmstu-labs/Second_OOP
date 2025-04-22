@@ -17,9 +17,9 @@ public:
 
     ~Node() = default;
 public:
-    static int get_height(const std::shared_ptr<Node<TYPE>> &) noexcept;
+    int get_height() const noexcept;
 
-    static int get_balance(const std::shared_ptr<Node<TYPE>> &) noexcept;
+    int get_balance() const noexcept;
 
     static void update_height(std::shared_ptr<Node<TYPE>> &) noexcept;
 
@@ -37,19 +37,25 @@ template<typename TYPE>
 Node<TYPE>::Node(TYPE value) noexcept : data(value), height(1), left(), right() {}
 
 template<typename TYPE>
-int Node<TYPE>::get_height(const std::shared_ptr<Node<TYPE>> &node) noexcept {
-    return node ? node->height : 0;
+int Node<TYPE>::get_height() const noexcept {
+    return this->height;
 }
 
 template<typename TYPE>
-int Node<TYPE>::get_balance(const std::shared_ptr<Node<TYPE>> &node) noexcept {
-    return node ? get_height(node->left) - get_height(node->right) : 0;
+int Node<TYPE>::get_balance() const noexcept { 
+    int left_height = this->left ? this->left->get_height() : 0;
+    int right_height = this->right ? this->right->get_height() : 0;
+
+    return left_height - right_height;
 }
 
 template<typename TYPE>
 void Node<TYPE>::update_height(std::shared_ptr<Node<TYPE>> &node) noexcept {
     if (node) {
-        node->height = 1 + std::max(get_height(node->left), get_height(node->right));
+        node->height = 1 + std::max(
+            node->left ? node->left->get_height() : 0,
+            node->right ? node->right->get_height() : 0
+        );
     }
 }
 
@@ -84,11 +90,11 @@ std::shared_ptr<Node<TYPE>> Node<TYPE>::balance(std::shared_ptr<Node<TYPE>> node
     if (!node) return nullptr;
 
     update_height(node);
-    const int bf = get_balance(node);
+    const int bf = node->get_balance();
 
     // Right-heavy
     if (bf < -1) {
-        if (get_balance(node->right) > 0) {
+        if (node->right->get_balance() > 0) {
             node->right = rotate_right((node->right));
         }
         return rotate_left((node));
@@ -96,7 +102,7 @@ std::shared_ptr<Node<TYPE>> Node<TYPE>::balance(std::shared_ptr<Node<TYPE>> node
 
     // Left-heavy
     if (bf > 1) {
-        if (get_balance(node->left) < 0) {
+        if (node->left->get_balance() < 0) {
             node->left = rotate_left((node->left));
         }
         return rotate_right((node));
