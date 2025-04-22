@@ -1,7 +1,7 @@
 #include <iostream>
 #include "tree.hpp"
 
-// Простая функция для вывода результатов тестов
+    
 void run_test(bool condition, const std::string& test_name) {
     static unsigned int counter = 1;
     if (condition) {
