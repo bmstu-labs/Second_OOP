@@ -17,6 +17,8 @@ public:
 
     ~Node() = default;
 public:
+    TYPE get_value() const noexcept;
+
     int get_height() const noexcept;
 
     int get_balance() const noexcept;
@@ -35,6 +37,11 @@ Node<TYPE>::Node() noexcept : data(TYPE{}), height(1), left(), right() {}
 
 template<typename TYPE>
 Node<TYPE>::Node(TYPE value) noexcept : data(value), height(1), left(), right() {}
+
+template<typename TYPE>
+TYPE Node<TYPE>::get_value() const noexcept {
+    return this->data;
+}
 
 template<typename TYPE>
 int Node<TYPE>::get_height() const noexcept {

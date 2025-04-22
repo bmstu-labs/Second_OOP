@@ -1,13 +1,18 @@
 #pragma once
 
 #include "node.hpp"
+#include "iterator.hpp"
+
 #include <vector>
 #include <memory>
 
 template<typename TYPE>
 class Tree {
+    friend class Iterator<TYPE>;
+private:
     std::shared_ptr<Node<TYPE>> head;
 
+private:
     std::size_t count_nodes(const std::shared_ptr<Node<TYPE>> &node) const noexcept;
 
     std::shared_ptr<Node<TYPE>> insert_node(std::shared_ptr<Node<TYPE>> node, TYPE value);
@@ -15,6 +20,8 @@ class Tree {
     std::shared_ptr<Node<TYPE>> remove_node(std::shared_ptr<Node<TYPE>> node, TYPE value) noexcept;
 
     void to_array_helper(const std::shared_ptr<Node<TYPE>> &node, std::vector<TYPE> &array) const;
+
+    std::shared_ptr<Node<TYPE>> get_root() const;
 
 public:
     Tree() noexcept = default;
@@ -36,6 +43,11 @@ public:
     std::size_t size() const noexcept;
     
     std::vector<TYPE> to_array() const;
+
+public:
+    Iterator<TYPE> begin() const;
+
+    Iterator<TYPE> end() const;
 };
 
 template<typename TYPE>
@@ -104,6 +116,11 @@ void Tree<TYPE>::to_array_helper(const std::shared_ptr<Node<TYPE>> &node, std::v
 }
 
 template<typename TYPE>
+std::shared_ptr<Node<TYPE>> Tree<TYPE>::get_root() const {
+    return head;
+}
+
+template<typename TYPE>
 Tree<TYPE>::Tree(const Tree &source) {
     for (const auto &elem : source.to_array()) insert(elem);
 }
@@ -157,4 +174,16 @@ std::vector<TYPE> Tree<TYPE>::to_array() const {
     std::vector<TYPE> result;
     to_array_helper(head, result);
     return result;
+}
+
+template<typename TYPE>
+Iterator<TYPE> Tree<TYPE>::begin() const {
+    return Iterator<TYPE>(*this);
+}
+
+template<typename TYPE>
+Iterator<TYPE> Tree<TYPE>::end() const {
+    Iterator<TYPE> it(*this);
+    it.mark_as_end();
+    return it;
 }
