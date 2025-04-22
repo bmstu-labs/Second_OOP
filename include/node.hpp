@@ -5,11 +5,19 @@
 
 template<typename TYPE>
 class Node {
+    typedef std::shared_ptr<Node<TYPE>> node_ptr;
+private:
     unsigned int height;
-public:
+
     TYPE data;
+
     std::shared_ptr<Node<TYPE>> left;
+
     std::shared_ptr<Node<TYPE>> right;
+
+private:
+    void update_height() noexcept;  
+
 public:
     Node() noexcept;
 
@@ -17,13 +25,21 @@ public:
 
     ~Node() = default;
 public:
-    TYPE get_value() const noexcept;
+    TYPE value() const noexcept;
 
     int get_height() const noexcept;
 
-    int get_balance() const noexcept;
+    std::shared_ptr<Node<TYPE>> get_left() const noexcept;
 
-    void update_height() noexcept;
+    std::shared_ptr<Node<TYPE>> get_right() const noexcept;
+
+    int balance() const noexcept;
+
+    void set_value(TYPE) noexcept;
+
+    void set_left(std::shared_ptr<Node<TYPE>>) noexcept;
+
+    void set_right(std::shared_ptr<Node<TYPE>>) noexcept;
 
     static std::shared_ptr<Node<TYPE>> rotate_right(std::shared_ptr<Node<TYPE>>) noexcept;
     
@@ -39,7 +55,7 @@ template<typename TYPE>
 Node<TYPE>::Node(TYPE value) noexcept : data(value), height(1), left(), right() {}
 
 template<typename TYPE>
-TYPE Node<TYPE>::get_value() const noexcept {
+TYPE Node<TYPE>::value() const noexcept {
     return this->data;
 }
 
@@ -49,11 +65,39 @@ int Node<TYPE>::get_height() const noexcept {
 }
 
 template<typename TYPE>
-int Node<TYPE>::get_balance() const noexcept { 
+std::shared_ptr<Node<TYPE>> Node<TYPE>::get_left() const noexcept {
+    return left;
+}
+
+template<typename TYPE>
+std::shared_ptr<Node<TYPE>> Node<TYPE>::get_right() const noexcept {
+    return right;
+}
+
+template<typename TYPE>
+int Node<TYPE>::balance() const noexcept { 
     int left_height = this->left ? this->left->get_height() : 0;
     int right_height = this->right ? this->right->get_height() : 0;
 
     return left_height - right_height;
+}
+
+template<typename TYPE>
+void Node<TYPE>::set_value(TYPE value) noexcept {
+    this->data = value;
+}
+
+
+template<typename TYPE>
+void Node<TYPE>::set_left(std::shared_ptr<Node<TYPE>> node) noexcept {
+    left = node;
+    this->update_height();
+}
+
+template<typename TYPE>
+void Node<TYPE>::set_right(std::shared_ptr<Node<TYPE>> node) noexcept {
+    right = node;
+    this->update_height();
 }
 
 template<typename TYPE>
@@ -95,11 +139,11 @@ std::shared_ptr<Node<TYPE>> Node<TYPE>::balance(std::shared_ptr<Node<TYPE>> node
     if (!node) return nullptr;
 
     node->update_height();
-    const int bf = node->get_balance();
+    const int bf = node->balance();
 
     // Right-heavy
     if (bf < -1) {
-        if (node->right->get_balance() > 0) {
+        if (node->right->balance() > 0) {
             node->right = rotate_right((node->right));
         }
         return rotate_left((node));
@@ -107,7 +151,7 @@ std::shared_ptr<Node<TYPE>> Node<TYPE>::balance(std::shared_ptr<Node<TYPE>> node
 
     // Left-heavy
     if (bf > 1) {
-        if (node->left->get_balance() < 0) {
+        if (node->left->balance() < 0) {
             node->left = rotate_left((node->left));
         }
         return rotate_right((node));

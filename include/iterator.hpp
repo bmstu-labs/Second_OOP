@@ -64,7 +64,7 @@ TYPE Iterator<TYPE>::value() const {
     if (!this->current) {
         throw std::runtime_error("Iterator is at end");
     }
-    return this->current->get_value();
+    return this->current->value();
 }
 
 template<typename TYPE>
@@ -81,8 +81,8 @@ Iterator<TYPE> &Iterator<TYPE>::operator ++ () {
     else {
         this->current = this->nodes.top();
         this->nodes.pop();
-        if (this->current->right) {
-            this->push_left(this->current->right);
+        if (this->current->get_right()) {
+            this->push_left(this->current->get_right());
         }
     }
 
@@ -112,7 +112,7 @@ template<typename TYPE>
 void Iterator<TYPE>::push_left(std::shared_ptr<Node<TYPE>> node) {
     while (node) {
         this->nodes.push(node);
-        node = node->left;
+        node = node->get_left();
     }
 }
 

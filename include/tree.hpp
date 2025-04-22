@@ -52,17 +52,17 @@ public:
 
 template<typename TYPE>
 std::size_t Tree<TYPE>::count_nodes(const std::shared_ptr<Node<TYPE>> &node) const noexcept {
-    return node ? 1 + count_nodes(node->left) + count_nodes(node->right) : 0;
+    return node ? 1 + count_nodes(node->get_left()) + count_nodes(node->get_right()) : 0;
 }
 
 template<typename TYPE>
 std::shared_ptr<Node<TYPE>> Tree<TYPE>::insert_node(std::shared_ptr<Node<TYPE>> node, TYPE value) {
     if (!node) return std::make_shared<Node<TYPE>>(value);
 
-    if (value < node->data) {
-        node->left = insert_node((node->left), value);
-    } else if (value > node->data) {
-        node->right = insert_node((node->right), value);
+    if (value < node->value()) {
+        node->get_left() = insert_node((node->get_left()), value);
+    } else if (value > node->value()) {
+        node->get_right() = insert_node((node->get_right()), value);
     }
 
     return Node<TYPE>::balance((node));
@@ -73,29 +73,29 @@ std::shared_ptr<Node<TYPE>> Tree<TYPE>::remove_node(std::shared_ptr<Node<TYPE>> 
     std::shared_ptr<Node<TYPE>> result = node;
 
     if (node) {
-        if (value < node->data) {
-            node->left = remove_node(node->left, value);
+        if (value < node->value()) {
+            node->get_left() = remove_node(node->get_left(), value);
         } 
-        else if (value > node->data) {
-            node->right = remove_node(node->right, value);
+        else if (value > node->value()) {
+            node->get_right() = remove_node(node->get_right(), value);
         } 
         else {
-            if (!node->left && !node->right) {
+            if (!node->get_left() && !node->get_right()) {
                 result = nullptr;
             }
-            else if (!node->left) {
-                result = node->right;
+            else if (!node->get_left()) {
+                result = node->get_right();
             }
-            else if (!node->right) {
-                result = node->left;
+            else if (!node->get_right()) {
+                result = node->get_left();
             }
             else {
-                auto current = node->right;
-                while (current->left) {
-                    current = current->left;
+                auto current = node->get_right();
+                while (current->get_left()) {
+                    current = current->get_left();
                 }
-                node->data = current->data;
-                node->right = remove_node(node->right, node->data);
+                node->set_value(current->value());
+                node->set_right(remove_node(node->get_right(), node->value()));
             }
         }
         
@@ -110,9 +110,9 @@ std::shared_ptr<Node<TYPE>> Tree<TYPE>::remove_node(std::shared_ptr<Node<TYPE>> 
 template<typename TYPE>
 void Tree<TYPE>::to_array_helper(const std::shared_ptr<Node<TYPE>> &node, std::vector<TYPE> &array) const {
     if (!node) return;
-    to_array_helper(node->left, array);
-    array.push_back(node->data);
-    to_array_helper(node->right, array);
+    to_array_helper(node->get_left(), array);
+    array.push_back(node->value());
+    to_array_helper(node->get_right(), array);
 }
 
 template<typename TYPE>
@@ -151,10 +151,10 @@ template<typename TYPE>
 bool Tree<TYPE>::find(TYPE value) noexcept {
     std::shared_ptr<Node<TYPE>> current = head;
     while (current) {
-        if (current->data == value) {
+        if (current->value() == value) {
             return true;
         }
-        current = (value < current->data) ? current->left : current->right;
+        current = (value < current->value()) ? current->get_left() : current->get_right();
     }
     return false;
 }
