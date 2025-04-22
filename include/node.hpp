@@ -8,8 +8,8 @@ class Node {
     unsigned int height;
 public:
     TYPE data;
-    std::unique_ptr<Node<TYPE>> left;
-    std::unique_ptr<Node<TYPE>> right;
+    std::shared_ptr<Node<TYPE>> left;
+    std::shared_ptr<Node<TYPE>> right;
 public:
     Node() noexcept;
 
@@ -17,49 +17,49 @@ public:
 
     ~Node() = default;
 public:
-    static int get_height(const std::unique_ptr<Node<TYPE>> &) noexcept;
+    static int get_height(const std::shared_ptr<Node<TYPE>> &) noexcept;
 
-    static int get_balance(const std::unique_ptr<Node<TYPE>> &) noexcept;
+    static int get_balance(const std::shared_ptr<Node<TYPE>> &) noexcept;
 
-    static void update_height(std::unique_ptr<Node<TYPE>> &) noexcept;
+    static void update_height(std::shared_ptr<Node<TYPE>> &) noexcept;
 
-    static std::unique_ptr<Node<TYPE>> rotate_right(std::unique_ptr<Node<TYPE>>) noexcept;
+    static std::shared_ptr<Node<TYPE>> rotate_right(std::shared_ptr<Node<TYPE>>) noexcept;
     
-    static std::unique_ptr<Node<TYPE>> rotate_left(std::unique_ptr<Node<TYPE>>) noexcept;
+    static std::shared_ptr<Node<TYPE>> rotate_left(std::shared_ptr<Node<TYPE>>) noexcept;
 
-    static std::unique_ptr<Node<TYPE>> balance(std::unique_ptr<Node<TYPE>>) noexcept;
+    static std::shared_ptr<Node<TYPE>> balance(std::shared_ptr<Node<TYPE>>) noexcept;
 };
 
 template<typename TYPE>
-Node<TYPE>::Node() noexcept : data(TYPE{}), height(1), left(nullptr), right(nullptr) {}
+Node<TYPE>::Node() noexcept : data(TYPE{}), height(1), left(), right() {}
 
 template<typename TYPE>
-Node<TYPE>::Node(TYPE value) noexcept : data(value), height(1), left(nullptr), right(nullptr) {}
+Node<TYPE>::Node(TYPE value) noexcept : data(value), height(1), left(), right() {}
 
 template<typename TYPE>
-int Node<TYPE>::get_height(const std::unique_ptr<Node<TYPE>> &node) noexcept {
+int Node<TYPE>::get_height(const std::shared_ptr<Node<TYPE>> &node) noexcept {
     return node ? node->height : 0;
 }
 
 template<typename TYPE>
-int Node<TYPE>::get_balance(const std::unique_ptr<Node<TYPE>> &node) noexcept {
+int Node<TYPE>::get_balance(const std::shared_ptr<Node<TYPE>> &node) noexcept {
     return node ? get_height(node->left) - get_height(node->right) : 0;
 }
 
 template<typename TYPE>
-void Node<TYPE>::update_height(std::unique_ptr<Node<TYPE>> &node) noexcept {
+void Node<TYPE>::update_height(std::shared_ptr<Node<TYPE>> &node) noexcept {
     if (node) {
         node->height = 1 + std::max(get_height(node->left), get_height(node->right));
     }
 }
 
 template<typename TYPE>
-std::unique_ptr<Node<TYPE>> Node<TYPE>::rotate_right(std::unique_ptr<Node<TYPE>> y) noexcept {
+std::shared_ptr<Node<TYPE>> Node<TYPE>::rotate_right(std::shared_ptr<Node<TYPE>> y) noexcept {
     if (!y || !y->left) return y;
     
-    auto x = std::move(y->left);
-    y->left = std::move(x->right);
-    x->right = std::move(y);
+    auto x = (y->left);
+    y->left = (x->right);
+    x->right = (y);
     
     update_height(x->right);
     update_height(x);
@@ -67,12 +67,12 @@ std::unique_ptr<Node<TYPE>> Node<TYPE>::rotate_right(std::unique_ptr<Node<TYPE>>
 }
 
 template<typename TYPE>
-std::unique_ptr<Node<TYPE>> Node<TYPE>::rotate_left(std::unique_ptr<Node<TYPE>> x) noexcept {
+std::shared_ptr<Node<TYPE>> Node<TYPE>::rotate_left(std::shared_ptr<Node<TYPE>> x) noexcept {
     if (!x || !x->right) return x;
     
-    auto y = std::move(x->right);
-    x->right = std::move(y->left);
-    y->left = std::move(x);
+    auto y = (x->right);
+    x->right = (y->left);
+    y->left = (x);
     
     update_height(y->left);
     update_height(y);
@@ -80,7 +80,7 @@ std::unique_ptr<Node<TYPE>> Node<TYPE>::rotate_left(std::unique_ptr<Node<TYPE>> 
 }
 
 template<typename TYPE>
-std::unique_ptr<Node<TYPE>> Node<TYPE>::balance(std::unique_ptr<Node<TYPE>> node) noexcept {
+std::shared_ptr<Node<TYPE>> Node<TYPE>::balance(std::shared_ptr<Node<TYPE>> node) noexcept {
     if (!node) return nullptr;
 
     update_height(node);
@@ -89,17 +89,17 @@ std::unique_ptr<Node<TYPE>> Node<TYPE>::balance(std::unique_ptr<Node<TYPE>> node
     // Right-heavy
     if (bf < -1) {
         if (get_balance(node->right) > 0) {
-            node->right = rotate_right(std::move(node->right));
+            node->right = rotate_right((node->right));
         }
-        return rotate_left(std::move(node));
+        return rotate_left((node));
     }
 
     // Left-heavy
     if (bf > 1) {
         if (get_balance(node->left) < 0) {
-            node->left = rotate_left(std::move(node->left));
+            node->left = rotate_left((node->left));
         }
-        return rotate_right(std::move(node));
+        return rotate_right((node));
     }
 
     return node;
