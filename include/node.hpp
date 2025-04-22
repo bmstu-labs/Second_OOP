@@ -4,12 +4,18 @@
 #include <memory>
 
 template<typename TYPE>
+class Node;
+
+template<typename TYPE>
+using node_ptr = std::shared_ptr<Node<TYPE>>;
+
+template<typename TYPE>
 class Node {
     unsigned int height;
 public:
     TYPE data;
-    std::shared_ptr<Node<TYPE>> left;
-    std::shared_ptr<Node<TYPE>> right;
+    node_ptr<TYPE> left;
+    node_ptr<TYPE> right;
 public:
     Node() noexcept;
 
@@ -25,11 +31,11 @@ public:
 
     void update_height() noexcept;
 
-    static std::shared_ptr<Node<TYPE>> rotate_right(std::shared_ptr<Node<TYPE>>) noexcept;
+    static node_ptr<TYPE> rotate_right(node_ptr<TYPE>) noexcept;
     
-    static std::shared_ptr<Node<TYPE>> rotate_left(std::shared_ptr<Node<TYPE>>) noexcept;
+    static node_ptr<TYPE> rotate_left(node_ptr<TYPE>) noexcept;
 
-    static std::shared_ptr<Node<TYPE>> balance(std::shared_ptr<Node<TYPE>>) noexcept;
+    static node_ptr<TYPE> balance(node_ptr<TYPE>) noexcept;
 };
 
 template<typename TYPE>
@@ -65,7 +71,7 @@ void Node<TYPE>::update_height() noexcept {
 }
 
 template<typename TYPE>
-std::shared_ptr<Node<TYPE>> Node<TYPE>::rotate_right(std::shared_ptr<Node<TYPE>> y) noexcept {
+node_ptr<TYPE> Node<TYPE>::rotate_right(node_ptr<TYPE> y) noexcept {
     if (!y || !y->left) return y;
     
     auto x = (y->left);
@@ -78,7 +84,7 @@ std::shared_ptr<Node<TYPE>> Node<TYPE>::rotate_right(std::shared_ptr<Node<TYPE>>
 }
 
 template<typename TYPE>
-std::shared_ptr<Node<TYPE>> Node<TYPE>::rotate_left(std::shared_ptr<Node<TYPE>> x) noexcept {
+node_ptr<TYPE> Node<TYPE>::rotate_left(node_ptr<TYPE> x) noexcept {
     if (!x || !x->right) return x;
     
     auto y = (x->right);
@@ -91,7 +97,7 @@ std::shared_ptr<Node<TYPE>> Node<TYPE>::rotate_left(std::shared_ptr<Node<TYPE>> 
 }
 
 template<typename TYPE>
-std::shared_ptr<Node<TYPE>> Node<TYPE>::balance(std::shared_ptr<Node<TYPE>> node) noexcept {
+node_ptr<TYPE> Node<TYPE>::balance(node_ptr<TYPE> node) noexcept {
     if (!node) return nullptr;
 
     node->update_height();

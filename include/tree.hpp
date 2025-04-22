@@ -10,18 +10,18 @@ template<typename TYPE>
 class Tree {
     friend class Iterator<TYPE>;
 private:
-    std::shared_ptr<Node<TYPE>> head;
+    node_ptr<TYPE> head;
 
 private:
-    std::size_t count_nodes(const std::shared_ptr<Node<TYPE>> &node) const noexcept;
+    std::size_t count_nodes(const node_ptr<TYPE> &node) const noexcept;
 
-    std::shared_ptr<Node<TYPE>> insert_node(std::shared_ptr<Node<TYPE>> node, TYPE value);
+    node_ptr<TYPE> insert_node(node_ptr<TYPE> node, TYPE value);
 
-    std::shared_ptr<Node<TYPE>> remove_node(std::shared_ptr<Node<TYPE>> node, TYPE value) noexcept;
+    node_ptr<TYPE> remove_node(node_ptr<TYPE> node, TYPE value) noexcept;
 
-    void to_array_helper(const std::shared_ptr<Node<TYPE>> &node, std::vector<TYPE> &array) const;
+    void to_array_helper(const node_ptr<TYPE> &node, std::vector<TYPE> &array) const;
 
-    std::shared_ptr<Node<TYPE>> get_root() const;
+    node_ptr<TYPE> get_root() const;
 
 public:
     Tree() noexcept = default;
@@ -51,12 +51,12 @@ public:
 };
 
 template<typename TYPE>
-std::size_t Tree<TYPE>::count_nodes(const std::shared_ptr<Node<TYPE>> &node) const noexcept {
+std::size_t Tree<TYPE>::count_nodes(const node_ptr<TYPE> &node) const noexcept {
     return node ? 1 + count_nodes(node->left) + count_nodes(node->right) : 0;
 }
 
 template<typename TYPE>
-std::shared_ptr<Node<TYPE>> Tree<TYPE>::insert_node(std::shared_ptr<Node<TYPE>> node, TYPE value) {
+node_ptr<TYPE> Tree<TYPE>::insert_node(node_ptr<TYPE> node, TYPE value) {
     if (!node) return std::make_shared<Node<TYPE>>(value);
 
     if (value < node->data) {
@@ -69,8 +69,8 @@ std::shared_ptr<Node<TYPE>> Tree<TYPE>::insert_node(std::shared_ptr<Node<TYPE>> 
 }
 
 template<typename TYPE>
-std::shared_ptr<Node<TYPE>> Tree<TYPE>::remove_node(std::shared_ptr<Node<TYPE>> node, TYPE value) noexcept {
-    std::shared_ptr<Node<TYPE>> result = node;
+node_ptr<TYPE> Tree<TYPE>::remove_node(node_ptr<TYPE> node, TYPE value) noexcept {
+    node_ptr<TYPE> result = node;
 
     if (node) {
         if (value < node->data) {
@@ -108,7 +108,7 @@ std::shared_ptr<Node<TYPE>> Tree<TYPE>::remove_node(std::shared_ptr<Node<TYPE>> 
 }
 
 template<typename TYPE>
-void Tree<TYPE>::to_array_helper(const std::shared_ptr<Node<TYPE>> &node, std::vector<TYPE> &array) const {
+void Tree<TYPE>::to_array_helper(const node_ptr<TYPE> &node, std::vector<TYPE> &array) const {
     if (!node) return;
     to_array_helper(node->left, array);
     array.push_back(node->data);
@@ -116,7 +116,7 @@ void Tree<TYPE>::to_array_helper(const std::shared_ptr<Node<TYPE>> &node, std::v
 }
 
 template<typename TYPE>
-std::shared_ptr<Node<TYPE>> Tree<TYPE>::get_root() const {
+node_ptr<TYPE> Tree<TYPE>::get_root() const {
     return head;
 }
 
@@ -149,7 +149,7 @@ void Tree<TYPE>::remove(TYPE value) noexcept {
 
 template<typename TYPE>
 bool Tree<TYPE>::find(TYPE value) noexcept {
-    std::shared_ptr<Node<TYPE>> current = head;
+    node_ptr<TYPE> current = head;
     while (current) {
         if (current->data == value) {
             return true;

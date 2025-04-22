@@ -14,14 +14,14 @@ template<typename TYPE>
 class Iterator {
     friend class Tree<TYPE>;
 private:
-    std::shared_ptr<Node<TYPE>> current;
+    node_ptr<TYPE> current;
 
-    std::stack<std::shared_ptr<Node<TYPE>>> nodes;
+    std::stack<node_ptr<TYPE>> nodes;
 
     const Tree<TYPE> &tree_ref;
 
 private:
-    void push_left(std::shared_ptr<Node<TYPE>>);
+    void push_left(node_ptr<TYPE>);
 
     void mark_as_end();
 public:
@@ -109,7 +109,7 @@ bool Iterator<TYPE>::operator!=(const Iterator<TYPE>& other) {
 }
 
 template<typename TYPE>
-void Iterator<TYPE>::push_left(std::shared_ptr<Node<TYPE>> node) {
+void Iterator<TYPE>::push_left(node_ptr<TYPE> node) {
     while (node) {
         this->nodes.push(node);
         node = node->left;
