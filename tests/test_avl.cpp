@@ -1,5 +1,6 @@
 #include <iostream>
 #include "tree.hpp"
+#include "iterator.hpp"
 
     
 void run_test(bool condition, const std::string& test_name) {
@@ -165,6 +166,23 @@ int main() {
         run_test(tree.size() == 8, "Size of tree after mixed insertion");
         run_test(tree.find(18), "Find 18 after mixed insertion");
         run_test(tree.find(25), "Find 25 after mixed insertion");
+    }
+
+    // Тест 16: Проверка итератора
+    {
+        Tree<int> tree;
+        tree.insert(10);
+        tree.insert(15);
+        tree.insert(5);
+        tree.insert(20);
+        tree.insert(3);
+        tree.insert(7);
+        tree.insert(18);
+        tree.insert(25);
+
+        for (auto it = tree.begin(); it != tree.end(); ++it) {
+            std::cout << it.value() << " ";
+        }
     }
 
     return 0;
